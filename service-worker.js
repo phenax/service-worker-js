@@ -158,9 +158,9 @@ class ServiceWorkerJS {
 	/**
 	 * Cache first recipe
 	 * 
-	 * @param  {FetchEvent} e   Event for onfetch
+	 * @param  {Object}   config  Configuration object
 	 * 
-	 * @return {Function}       Response promise creator
+	 * @return {Function}         Fn that returns a promise
 	 */
 	cacheFirst(config) {
 
@@ -172,6 +172,14 @@ class ServiceWorkerJS {
 			});
 	}
 
+
+	/**
+	 * Network only recipe
+	 * 
+	 * @param  {Object}    config
+	 * 
+	 * @return {Function}
+	 */
 	networkOnly(config) {
 
 		return e => new Promise((resolve, reject) => {
