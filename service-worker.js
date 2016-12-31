@@ -167,7 +167,22 @@ class ServiceWorkerJS {
 		return e => this
 			.searchCache(e.request)
 			.then(response => {
-				return response || this.fetch(e.request, config.cache);
+				return response || 
+					this.fetch(e.request, config.cache);
 			});
+	}
+
+	networkOnly(config) {
+
+		return e => new Promise((resolve, reject) => {
+
+			// Network request timeout check
+			setTimeout(() => reject(new Error('Request timeout')), config.timeout || 10000);
+
+			// Make the request
+			fetch(e.request)
+				.then(resolve)
+				.catch(reject);
+		});
 	}
 }
