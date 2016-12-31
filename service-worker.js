@@ -7,6 +7,8 @@ const _self= self;
 
 /**
  * Route to check for matching requests
+ *
+ * @extends {Map}
  */
 class SWRoute extends Map {
 
@@ -17,6 +19,7 @@ class SWRoute extends Map {
 		this.set('config', config);
 		this.set('controllers', controllers);
 	}
+
 
 	/**
 	 * Checks if a request matches this route
@@ -56,13 +59,13 @@ class ServiceWorkerJS {
 
 	constructor() {
 
+		// All the routes with no cache name will be stored in this
 		this.DEFAULT_CACHE_NAME= 'cache-default-swjs';
 
 		this._routes= [];
 
-		this._fetchHandler= this._fetchHandler.bind(this);
-
-		_self.addEventListener('fetch', this._fetchHandler);
+		// Attach fetch event handler
+		_self.addEventListener('fetch', this._fetchHandler.bind(this));
 	}
 
 
@@ -75,6 +78,7 @@ class ServiceWorkerJS {
 	 */
 	addRoute(route, config, ...controllers) {
 
+		// If SWRoute is passed directly
 		if(route.constructor === SWRoute)
 			this._routes.push(route);
 		else
@@ -114,6 +118,14 @@ class ServiceWorkerJS {
 		}
 	}
 
+
+	/**
+	 * Fetches and caches the response
+	 * 
+	 * @param  {Request}   request
+	 * @param  {string}    cacheName  The name of the cache to put the response in
+	 * @return {Response}             Response promise
+	 */
 	fetch(request, cacheName=this.DEFAULT_CACHE_NAME) {
 
 		return fetch(request)
@@ -148,7 +160,7 @@ class ServiceWorkerJS {
 	 * 
 	 * @param  {FetchEvent} e   Event for onfetch
 	 * 
-	 * @return {Response}       Response promise
+	 * @return {Function}       Response promise creator
 	 */
 	cacheFirst(config) {
 
