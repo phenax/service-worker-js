@@ -1,0 +1,25 @@
+{
+  "name": "service-worker-js",
+  "version": "0.0.0",
+  "description": "__",
+  "main": "service-worker.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "__"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phenax/service-worker-js.git"
+  },
+  "keywords": [
+    "__"
+  ],
+  "author": "Akshay Nair <phenax5@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/phenax/service-worker-js/issues"
+  },
+  "homepage": "https://github.com/phenax/service-worker-js#readme"
+}

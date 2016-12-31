@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ServiceWorkerJS Example</title>
+	<script>
+		if('serviceWorker' in navigator) {
+			navigator.serviceWorker
+				.register('./sw.js')
+				.then(() => {
+					console.log('Service worker registered');
+				});
+		}
+	</script>
+</head>
+<body>
+
+Cool
+
+<script src="./script-1.js" async defer></script>
+<script src="./script-2.js" async defer></script>
+</body>
+</html>
