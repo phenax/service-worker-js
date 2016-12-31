@@ -3,32 +3,44 @@
 
 const _self= self;
 
-class Route extends Map {
+class SWRoute extends Map {
 
-	constructor(route, controllers) {
+	constructor(route, config, ...controllers) {
 		super();
 
 		this.set('route', route);
+		this.set('config', config);
 		this.set('controllers', controllers);
 	}
 
 	match(request) {
 
 		const route= this.get('route');
+		const config= this.get('config');
+
+		// Request method check
+		if('method' in config) {
+			if(request.method.toLowerCase() !== config.method.toLowerCase())
+				return false;
+		}
 
 		if(typeof route === 'string') {
-			return request.url.endsWith(route);
-		} else if(typeof route.test === 'function') {
-			return route.test(request.url);
+			return request.url.endsWith(route);  // For strings
+		} else if('test' in route) {
+			return route.test(request.url);      // For regular expressions
 		}
 
 		return false;
 	}
 }
 
+
+/**
+ * Service worker class
+ */
 class ServiceWorkerJS {
 
-	constructor(config) {
+	constructor() {
 
 		this._routes= [];
 
@@ -37,30 +49,36 @@ class ServiceWorkerJS {
 		_self.addEventListener('fetch', this._fetchHandler);
 	}
 
-	addRoute(route, ...controllers) {
-		this._routes.push(new Route(route, controllers));
+	addRoute(route, config, ...controllers) {
+
+		if(route.constructor === SWRoute)
+			this._routes.push(route);
+		else
+			this._routes.push(new SWRoute(route, config, ...controllers));
 	}
 
 	_fetchHandler(event) {
 
 		let response_P= null;
 
+		// For each route
 		this._routes
-			.filter(route => route.match(event.request))
-			.forEach(route => 
-				route
+			.filter(route => route.match(event.request))                      // Get the ones that match the request made
+			.forEach(route =>
+				route                                                         // For each controller
 					.get('controllers')
-					.filter(ctrlr => typeof ctrlr === 'function')
+					.filter(ctrlr => typeof ctrlr === 'function')             // If its a function, let it through
 					.forEach(ctrlr => {
-						if(response_P) {
+						if(response_P && 'then' in response_P) {                            // If its a promise, call controller after it resolves
 							response_P= response_P.then(() => ctrlr(event));
-						} else {
+						} else {                                              // Else just call the controller
 							response_P= ctrlr(event);
 						}
 					})
 			);
 
-		if(response_P) {
+		// If the response is a promise, respond with it
+		if(response_P && 'then' in response_P) {
 			event.respondWith(response_P);
 		}
 	}
