@@ -79,6 +79,7 @@ class ServiceWorkerJS {
 	 * @param  {List}    precacheList  List of file names
 	 */
 	precache(cacheName, precacheList) {
+
 		this._precacheList.push({
 			cacheName,
 			files: precacheList
@@ -127,6 +128,7 @@ class ServiceWorkerJS {
 	}
 
 
+
 	/**
 	 * Fetch event handler
 	 * 
@@ -139,19 +141,26 @@ class ServiceWorkerJS {
 
 		// For each route
 		this._routes
-			.filter(route => route.match(event.request))                      // Get the ones that match the request made
+			// Get the ones that match the request made
+			.filter(route => route.match(event.request))
 			.forEach(route =>
-				route                                                         // For each controller
+				route
 					.get('controllers')
-					.filter(ctrlr => typeof ctrlr === 'function')             // If its a function, let it through
+					// If its a function, let it through
+					.filter(ctrlr => typeof ctrlr === 'function')
 					.forEach(ctrlr => {
-						if(response_P && 'then' in response_P) {              // If its a promise, call controller after it resolves
+
+						// If its a promise, call controller after it resolves
+						if(response_P && 'then' in response_P) {
 							response_P= response_P.then(() => ctrlr(event));
-						} else {                                              // Else just call the controller
+
+						// Else just call the controller
+						} else {
 							response_P= ctrlr(event);
 						}
 					})
 			);
+
 
 		// If the response is a promise, respond with it
 		if(response_P && 'then' in response_P) {
