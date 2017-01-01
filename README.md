@@ -38,10 +38,23 @@ sw.addRoute('style.css', { method: 'get' }, sw.cacheFirst({ cache: 'cache-styles
 // (The timeout for the request is 4seconds(10 seconds by default))
 sw.addRoute('main.js', { method: 'get' }, sw.networkOnly({ timeout: 4000 }));
 
+
+// You can directly pass a route object
+const scriptRoute= new SWRoute('script-1.js', { method: 'get' }, e => fetch(e.request));
+sw.addRoute(scriptRoute);
+
 ```
 
 
 * Available recipies
+
+	- Race
+		Races the network and cache and responds with whatever happens first
+		Options- ``` sw.race({ cache: 'cache-scripts', timeout: 3000 }) ```
+
+	- CacheFirst
+		Check the cache for the file and if it wasnt present, make a fetch request to the network
+		Options- ``` sw.cacheFirst({ cache: 'cache-styles' }) ```
 
 	- CacheOnly
 		Check the cache for the file and if the file isnt precached, respond with an error or a default response.
@@ -50,10 +63,6 @@ sw.addRoute('main.js', { method: 'get' }, sw.networkOnly({ timeout: 4000 }));
 	- NetworkOnly
 		Check the network for a response and respond with an error if it takes more than the timeout period.
 		Options- ``` sw.networkOnly({ timeout: 4000 }) ```
-
-	- CacheFirst
-		Check the cache for the file and if it wasnt present, make a fetch request to the network
-		Options- ``` sw.cacheFirst({ cache: 'cache-styles' }) ```
 
 
 
