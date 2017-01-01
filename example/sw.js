@@ -28,5 +28,5 @@ const sw= new ServiceWorkerJS();
 sw.addRoute('script-1.js', { method: 'get' }, sw.cacheFirst({ cache: 'cache-scripts' }));
 sw.addRoute(/script-2\.js$/, { method: 'get' }, sw.networkOnly({ timeout: 3000 }));
 
-sw.addRoute(/\/example\/$/, { method: 'get' }, sw.cacheOnly({ default: 'Dummy response' }));
+sw.addRoute(/\/example\/$/, { method: 'get' }, sw.cacheOnly({ default: new Response('Dummy response') }));
 

@@ -175,15 +175,22 @@ class ServiceWorkerJS {
 	}
 
 
+	/**
+	 * Cache only recipe
+	 * 
+	 * @param  {Object} config
+	 * 
+	 * @return {Function}
+	 */
 	cacheOnly(config) {
 
 		return e => 
 			this
-				.searchCache(e.request)
+				.searchCache(e.request)            // Look for it in the cache
 				.then(response => 
-					response || (
-						(config.default)? 
-							new Response(config.default): 
+					response || (                  // If it wasnt found, either return a default response or an error
+						(config.default)?
+							config.default: 
 							Promise.reject(new Error('Cache not found'))
 					)
 				);
