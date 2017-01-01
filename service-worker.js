@@ -207,6 +207,25 @@ class ServiceWorkerJS {
 
 	// ##############  RECIPIES  ##################
 
+
+	race(config) {
+
+		const cacheOnly= e => new Promise((resolve, reject) => {
+			this.cacheOnly(config)(e)
+				.then(resolve)
+				.catch(() => null);
+		});
+
+		const networkOnly= e => new Promise((resolve, reject) => {
+			this.networkOnly(config)(e)
+				.then(resolve)
+				.catch(() => null);
+		});
+
+		return e => Promise.race([ cacheOnly(e), networkOnly(e) ]);
+	}
+
+
 	/**
 	 * Cache first recipe
 	 * 

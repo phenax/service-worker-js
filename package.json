@@ -1,20 +1,22 @@
 {
   "name": "service-worker-js",
   "version": "0.0.0",
-  "description": "__",
+  "description": "Service worker recipies library",
   "main": "service-worker.js",
   "directories": {
     "example": "example"
   },
-  "scripts": {
-    "test": "__"
-  },
+  "scripts": { },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phenax/service-worker-js.git"
   },
   "keywords": [
-    "__"
+    "service workers",
+    "sw",
+    "offline",
+    "recipe",
+    "javascript"
   ],
   "author": "Akshay Nair <phenax5@gmail.com>",
   "license": "Apache-2.0",
