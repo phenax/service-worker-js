@@ -45,15 +45,15 @@ sw.addRoute('main.js', { method: 'get' }, sw.networkOnly({ timeout: 4000 }));
 
 	- CacheOnly
 		Check the cache for the file and if the file isnt precached, respond with an error or a default response.
-		Options- ```javascript sw.cacheOnly({ default: new Response('Dummy response') })```
+		Options- ``` sw.cacheOnly({ default: new Response('Dummy response') }) ```
 
 	- NetworkOnly
 		Check the network for a response and respond with an error if it takes more than the timeout period.
-		Options- ```javascript sw.networkOnly({ timeout: 4000 })```
+		Options- ``` sw.networkOnly({ timeout: 4000 }) ```
 
 	- CacheFirst
 		Check the cache for the file and if it wasnt present, make a fetch request to the network
-		Options- ```javascript sw.cacheFirst({ cache: 'cache-styles' })```
+		Options- ``` sw.cacheFirst({ cache: 'cache-styles' }) ```
 
 
 
