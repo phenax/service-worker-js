@@ -254,16 +254,11 @@ class ServiceWorkerJS {
 
 	networkFirst(config) {
 
-		return e =>
-			this.fetch(e.request)
+		return e => 
+			this
+				.fetch(e.request, config.cache)
 				.catch(e => {})
-				.then(response => {
-					caches
-						.open(config.cache)
-						.then(cache => cache.put(e.request, response));
-
-					return response;
-				});
+				.then(() => caches.match(e.request));
 	}
 
 
