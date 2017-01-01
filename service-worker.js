@@ -65,7 +65,7 @@ class ServiceWorkerJS {
 		this._routes= [];
 
 		// Attach fetch event handler
-		_self.addEventListener('fetch', this._fetchHandler.bind(this));
+		_self.addEventListener('fetch', this._onFetchHandler.bind(this));
 	}
 
 
@@ -91,7 +91,7 @@ class ServiceWorkerJS {
 	 * 
 	 * @param  {FetchEvent}  event  The fetch event made by the browser
 	 */
-	_fetchHandler(event) {
+	_onFetchHandler(event) {
 
 		// Response promise
 		let response_P= null;
@@ -128,16 +128,20 @@ class ServiceWorkerJS {
 	 */
 	fetch(request, cacheName=this.DEFAULT_CACHE_NAME) {
 
+		// Make a fetch request
 		return fetch(request)
-			.then(resp => caches
-				.open(cacheName)
-				.then(cache => {
+			.then(resp => 
+				caches
+					.open(cacheName)
+					.then(cache => {
 
-					cache.put(request, resp.clone());
+						// Cache the response
+						cache.put(request, resp.clone());
 
-					return resp;
-				})
-			);
+						return resp;
+					})
+			)
+			.catch(e => console.error(e));
 	}
 
 
@@ -164,12 +168,25 @@ class ServiceWorkerJS {
 	 */
 	cacheFirst(config) {
 
-		return e => this
-			.searchCache(e.request)
-			.then(response => {
-				return response || 
-					this.fetch(e.request, config.cache);
-			});
+		return e => 
+			this
+				.searchCache(e.request)
+				.then(response => response || this.fetch(e.request, config.cache));
+	}
+
+
+	cacheOnly(config) {
+
+		return e => 
+			this
+				.searchCache(e.request)
+				.then(response => 
+					response || (
+						(config.default)? 
+							new Response(config.default): 
+							Promise.reject(new Error('Cache not found'))
+					)
+				);
 	}
 
 
