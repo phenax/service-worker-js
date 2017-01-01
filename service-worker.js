@@ -208,20 +208,30 @@ class ServiceWorkerJS {
 	// ##############  RECIPIES  ##################
 
 
+	/**
+	 * Race (network and cache) recipe
+	 * 
+	 * @param  {Object} config
+	 * 
+	 * @return {Function}
+	 */
 	race(config) {
 
+		// Cache only with errors absorbed
 		const cacheOnly= e => new Promise((resolve, reject) => {
 			this.cacheOnly(config)(e)
 				.then(resolve)
 				.catch(() => null);
 		});
 
+		// Network only with errors absorbed
 		const networkOnly= e => new Promise((resolve, reject) => {
 			this.networkOnly(config)(e)
 				.then(resolve)
 				.catch(() => null);
 		});
 
+		// Race the two
 		return e => Promise.race([ cacheOnly(e), networkOnly(e) ]);
 	}
 
