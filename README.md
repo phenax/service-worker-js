@@ -56,6 +56,10 @@ sw.addRoute(scriptRoute);
 		Check the cache for the file and if it wasnt present, make a fetch request to the network
 		Options- ``` sw.cacheFirst({ cache: 'cache-styles' }) ```
 
+	- NetworkFirst
+		Make a fetch request to the network, if something goes wrong, check the cache for the file
+		Options- ``` sw.networkFirst({ cache: 'cache-scripts', timeout: 3000 }) ```
+
 	- CacheOnly
 		Check the cache for the file and if the file isnt precached, respond with an error or a default response.
 		Options- ``` sw.cacheOnly({ default: new Response('Dummy response') }) ```
