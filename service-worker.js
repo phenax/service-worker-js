@@ -72,6 +72,12 @@ class ServiceWorkerJS {
 
 
 
+	/**
+	 * Add files precaching
+	 * 
+	 * @param  {string}  cacheName     Name of the cache to store it in
+	 * @param  {List}    precacheList  List of file names
+	 */
 	precache(cacheName, precacheList) {
 		this._precacheList.push({
 			cacheName,
@@ -97,17 +103,24 @@ class ServiceWorkerJS {
 	}
 
 
+	/**
+	 * Install event handler
+	 * 
+	 * @param  {InstallEvent} event
+	 */
 	_onInstallHandler(event) {
 
 		event.waitUntil(
+
+			// Wait to add all the caches
 			Promise.all(
+
+				// for all the caches
 				this._precacheList
 					.map(preCache => 
 						caches
 							.open(preCache.cacheName)
-							.then(cache => 
-								cache.addAll(preCache.files)
-							)
+							.then(cache => cache.addAll(preCache.files))
 					)
 			)
 		);
