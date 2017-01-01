@@ -200,6 +200,13 @@ class ServiceWorkerJS {
 	}
 
 
+	/**
+	 * Absorbs the error in a promise
+	 * 
+	 * @param  {Promise} promise
+	 * 
+	 * @return {Promise}
+	 */
 	_absorbError(promise) {
 
 		return new Promise((resolve, reject) => {
@@ -208,6 +215,9 @@ class ServiceWorkerJS {
 				.catch(() => null);
 		});
 	}
+
+
+
 
 
 
@@ -246,19 +256,31 @@ class ServiceWorkerJS {
 
 		return e => 
 			this
+				// Look in the cache
 				.searchCache(e.request)
+				// Respond with the cache or fetch and then cache
 				.then(response => response || this.fetch(e.request, config.cache));
 	}
 
 
 
+	/**
+	 * Network first recipe
+	 * 
+	 * @param  {Object}  config
+	 * 
+	 * @return {Function}
+	 */
 	networkFirst(config) {
 
 		return e => 
 			this
+				// Fetch
 				.fetch(e.request, config.cache)
+				// Absorb error
 				.catch(e => {})
-				.then(() => caches.match(e.request));
+				// Respond with the response or look in the cache
+				.then(response => response || this.searchCache(e.request));
 	}
 
 
@@ -274,15 +296,18 @@ class ServiceWorkerJS {
 
 		return e => 
 			this
-				.searchCache(e.request)            // Look for it in the cache
-				.then(response => 
-					response || (                  // If it wasnt found, either return a default response or an error
+				// Look for it in the cache
+				.searchCache(e.request)
+				.then(response =>
+					// If it wasnt found, either return a default response or an error 
+					response || (
 						(config.default)?
 							config.default: 
 							Promise.reject(new Error('Cache not found'))
 					)
 				);
 	}
+
 
 
 	/**
