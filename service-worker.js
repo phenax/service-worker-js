@@ -63,9 +63,20 @@ class ServiceWorkerJS {
 		this.DEFAULT_CACHE_NAME= 'cache-default-swjs';
 
 		this._routes= [];
+		this._precacheList= [];
 
-		// Attach fetch event handler
+		// Attach event handlers
 		_self.addEventListener('fetch', this._onFetchHandler.bind(this));
+		_self.addEventListener('install', this._onInstallHandler.bind(this));
+	}
+
+
+
+	precache(cacheName, precacheList) {
+		this._precacheList.push({
+			cacheName,
+			files: precacheList
+		});
 	}
 
 
@@ -83,6 +94,23 @@ class ServiceWorkerJS {
 			this._routes.push(route);
 		else
 			this._routes.push(new SWRoute(route, config, ...controllers));
+	}
+
+
+	_onInstallHandler(event) {
+
+		event.waitUntil(
+			Promise.all(
+				this._precacheList
+					.map(preCache => 
+						caches
+							.open(preCache.cacheName)
+							.then(cache => 
+								cache.addAll(preCache.files)
+							)
+					)
+			)
+		);
 	}
 
 
@@ -158,6 +186,13 @@ class ServiceWorkerJS {
 			.catch(e => console.error(e));
 	}
 
+
+
+
+
+
+
+	// ##############  RECIPIES  ##################
 
 	/**
 	 * Cache first recipe

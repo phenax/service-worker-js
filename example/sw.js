@@ -4,14 +4,13 @@
 importScripts([ '../service-worker.js' ]);
 
 
-// const precacheList= [
-// 	'script-1.js',
-// 	'script-2.js'
-// ];
+const precacheList= [
+	'script-2.js'
+];
 
 const sw= new ServiceWorkerJS();
 
-// sw.precache('precache', precacheList);
+sw.precache('precache', precacheList);
 
 
 // sw.addRoute('script-1.js', { method: 'get' }, e => fetch(e.request));
@@ -26,7 +25,9 @@ const sw= new ServiceWorkerJS();
 
 
 sw.addRoute('script-1.js', { method: 'get' }, sw.cacheFirst({ cache: 'cache-scripts' }));
-sw.addRoute(/script-2\.js$/, { method: 'get' }, sw.networkOnly({ timeout: 3000 }));
+// sw.addRoute(/script-2\.js$/, { method: 'get' }, sw.networkOnly({ timeout: 3000 }));
 
-sw.addRoute(/\/example\/$/, { method: 'get' }, sw.cacheOnly({ default: new Response('Dummy response') }));
+// sw.addRoute(/\/example\/$/, { method: 'get' }, sw.cacheOnly({ default: new Response('Dummy response') }));
+
+
 
