@@ -200,6 +200,14 @@ class ServiceWorkerJS {
 	}
 
 
+	_absorbError(promise) {
+
+		return new Promise((resolve, reject) => {
+			promise
+				.then(resolve)
+				.catch(() => null);
+		});
+	}
 
 
 
@@ -218,18 +226,9 @@ class ServiceWorkerJS {
 	race(config) {
 
 		// Cache only with errors absorbed
-		const cacheOnly= e => new Promise((resolve, reject) => {
-			this.cacheOnly(config)(e)
-				.then(resolve)
-				.catch(() => null);
-		});
-
+		const cacheOnly= e => this._absorbError(this.cacheOnly(config)(e));
 		// Network only with errors absorbed
-		const networkOnly= e => new Promise((resolve, reject) => {
-			this.networkOnly(config)(e)
-				.then(resolve)
-				.catch(() => null);
-		});
+		const networkOnly= e => this._absorbError(this.networkOnly(config)(e));
 
 		// Race the two
 		return e => Promise.race([ cacheOnly(e), networkOnly(e) ]);
@@ -250,6 +249,23 @@ class ServiceWorkerJS {
 				.searchCache(e.request)
 				.then(response => response || this.fetch(e.request, config.cache));
 	}
+
+
+
+	networkFirst(config) {
+
+		return e =>
+			this.fetch(e.request)
+				.catch(e => {})
+				.then(response => {
+					caches
+						.open(config.cache)
+						.then(cache => cache.put(e.request, response));
+
+					return response;
+				});
+	}
+
 
 
 	/**
