@@ -12,6 +12,10 @@ sw.precache('precache', [
 	'/example/'
 ]);
 
+sw.onPushNotification= () => {
+	console.log('pushed');
+};
+
 
 // Simple fetch
 // sw.addRoute('script-1.js', { method: 'get' }, e => fetch(e.request));

@@ -64,11 +64,25 @@ class ServiceWorkerJS {
 
 		this._routes= [];
 		this._precacheList= [];
+		this._pushCallback= [];
 
 		// Attach event handlers
 		_self.addEventListener('fetch', this._onFetchHandler.bind(this));
 		_self.addEventListener('install', this._onInstallHandler.bind(this));
 	}
+
+
+	set onPushNotification(callback) {
+
+		_self.removeEventListener('push', this._onPushHandler.bind(this));
+		_self.addEventListener('push', this._onPushHandler.bind(this));
+
+		if(typeof callback === 'function')
+			this._pushCallback= callback;
+		else
+			throw new Error('Push notification callback needs to be a function');
+	}
+
 
 
 
@@ -102,6 +116,14 @@ class ServiceWorkerJS {
 		else
 			this._routes.push(new SWRoute(route, config, ...controllers));
 	}
+
+
+
+	_onPushHandler(event) {
+
+		
+	}
+
 
 
 	/**
