@@ -64,7 +64,9 @@ class ServiceWorkerJS {
 
 		this._routes= [];
 		this._precacheList= [];
-		this._pushCallback= [];
+		this._pushCallback= () => {};
+
+		this._onPushHandler= this._onPushHandler.bind(this);
 
 		// Attach event handlers
 		_self.addEventListener('fetch', this._onFetchHandler.bind(this));
@@ -74,8 +76,8 @@ class ServiceWorkerJS {
 
 	set onPushNotification(callback) {
 
-		_self.removeEventListener('push', this._onPushHandler.bind(this));
-		_self.addEventListener('push', this._onPushHandler.bind(this));
+		_self.removeEventListener('push', this._onPushHandler);
+		_self.addEventListener('push', this._onPushHandler);
 
 		if(typeof callback === 'function')
 			this._pushCallback= callback;
@@ -121,7 +123,17 @@ class ServiceWorkerJS {
 
 	_onPushHandler(event) {
 
-		
+		const modResponse= this._pushCallback(event);
+
+		event.waitUntil(
+			modResponse
+				.then(data => self.registration
+					.showNotification(
+						data.title,
+						data.options
+					)
+				)
+		);
 	}
 
 

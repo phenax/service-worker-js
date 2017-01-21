@@ -13,7 +13,15 @@ sw.precache('precache', [
 ]);
 
 sw.onPushNotification= () => {
-	console.log('pushed');
+
+	return Promise.resolve({
+		title: 'Got a notification',
+		options: {
+			body: 'Lorem ipsum bullshit for this notification',
+			icon: 'img/icon.png',
+			badge: 'img/badge.png',
+		}
+	});
 };
 
 
