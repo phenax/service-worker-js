@@ -128,15 +128,23 @@ class ServiceWorkerJS {
 		if(typeof this._pushCallback !== 'function')
 			return;
 
-		const modResponse= this._pushCallback(event);
+		const notificationPromise= this._pushCallback(event);
+
+		if(typeof notificationPromise.then !== 'function')
+			return;
 
 		event.waitUntil(
-			modResponse
-				.then(data => self.registration
-					.showNotification(
-						data.title,
-						data.options
-					)
+
+			// The promise resolves to the notification
+			notificationPromise
+				.then(notific => 
+
+					// Show the notification
+					self.registration
+						.showNotification(
+							notific.title,
+							notific.options
+						)
 				)
 		);
 	}
