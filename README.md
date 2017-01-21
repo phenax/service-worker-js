@@ -46,6 +46,31 @@ sw.addRoute(scriptRoute);
 ```
 
 
+* Push Notification
+
+```javascript
+
+// For handling push notifications
+sw.onPushNotification= event => {
+
+	console.log('Got a notification', event);
+
+	// Needs to return a promise that resolves with the notification data
+	return Promise.resolve({
+		title: 'Got a notification',
+		options: {
+			body: 'Lorem ipsum for this notification',
+			icon: 'img/icon.png',
+			badge: 'img/badge.png',
+		}
+	});
+};
+
+```
+
+
+
+
 * Available recipies
 
 	- Race
