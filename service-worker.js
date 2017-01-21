@@ -64,7 +64,6 @@ class ServiceWorkerJS {
 
 		this._routes= [];
 		this._precacheList= [];
-		this._pushCallback= () => {};
 
 		this._onPushHandler= this._onPushHandler.bind(this);
 
@@ -74,8 +73,14 @@ class ServiceWorkerJS {
 	}
 
 
+	/**
+	 * Push notification callback setter
+	 * 
+	 * @param  {Function} callback
+	 */
 	set onPushNotification(callback) {
 
+		// Remove and add the handler(Dont wanna leak and shit)
 		_self.removeEventListener('push', this._onPushHandler);
 		_self.addEventListener('push', this._onPushHandler);
 
@@ -125,11 +130,14 @@ class ServiceWorkerJS {
 	 */
 	_onPushHandler(event) {
 
+		// Callback check
 		if(typeof this._pushCallback !== 'function')
 			return;
 
+		// Execute the callback
 		const notificationPromise= this._pushCallback(event);
 
+		// Promise check
 		if(typeof notificationPromise.then !== 'function')
 			return;
 
