@@ -79,10 +79,7 @@ class ServiceWorkerJS {
 		_self.removeEventListener('push', this._onPushHandler);
 		_self.addEventListener('push', this._onPushHandler);
 
-		if(typeof callback === 'function')
-			this._pushCallback= callback;
-		else
-			throw new Error('Push notification callback needs to be a function');
+		this._pushCallback= callback;
 	}
 
 
@@ -121,7 +118,15 @@ class ServiceWorkerJS {
 
 
 
+	/**
+	 * Push event handler
+	 * 
+	 * @param  {Event} event
+	 */
 	_onPushHandler(event) {
+
+		if(typeof this._pushCallback !== 'function')
+			return;
 
 		const modResponse= this._pushCallback(event);
 
