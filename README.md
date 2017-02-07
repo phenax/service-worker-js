@@ -46,7 +46,7 @@ sw.addRoute(scriptRoute);
 ```
 
 
-* Push Notification
+* Push Notification[Not ready]
 
 ```javascript
 
