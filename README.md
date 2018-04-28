@@ -1,5 +1,7 @@
 # ServiceWorkersJS
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/phenax/service-worker-js.svg)](https://greenkeeper.io/)
+
 Service worker recipe library
 
 
